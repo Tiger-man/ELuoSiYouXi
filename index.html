@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>俄罗斯方块</title>
+</head>
+<style>
+  body{
+    text-align: center;
+  }
+  #game{
+    border: 1px solid rgba(0, 0, 0, .2);
+    display: inline-block;
+    margin: auto;
+    font-size: 0;
+  }
+  #opts{
+    margin-bottom: 10px;
+  }
+</style>
+<body>
+  <div id="opts">
+    <button id="rePlayBtn">重新游戏</button>
+    <button id="pauseBtn">暂停游戏</button>
+  </div>
+  <div id="game"></div>
+</body>
+</html>
+<script src="./index.js"></script>
+<script>
+  const game = new ELuoSiGame({ 
+    selector: '#game', 
+    width: 300, 
+    height: 600,
+  })
+
+  pauseBtn.onclick = () => {
+    game.pauseGame()
+    pauseBtn.innerText = game.pause ? '继续游戏' : '暂停游戏'  
+  }
+
+  rePlayBtn.onclick = () => {
+    pauseBtn.innerText = '暂停游戏'
+    game.reStartGame()
+  }
+</script>
