@@ -24,6 +24,7 @@
   <div id="opts">
     <button id="rePlayBtn">重新游戏</button>
     <button id="pauseBtn">暂停游戏</button>
+    <button id="helpBtn">辅助线:<span id="helpLine">off</span></button>
   </div>
   <div id="game"></div>
 </body>
@@ -44,5 +45,10 @@
   rePlayBtn.onclick = () => {
     pauseBtn.innerText = '暂停游戏'
     game.reStartGame()
+  }
+
+  helpBtn.onclick = () => {
+    game.toggleHelp()
+    helpLine.innerText = game.help ? 'on' : 'off'
   }
 </script>

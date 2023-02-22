@@ -52,6 +52,9 @@ class ELuoSiGame {
   // 游戏暂停
   pause = false
 
+  // 辅助线
+  help = false
+
   // 自由掉落计数器Id
   dropIntervalTimer = null
   // 掉落速度
@@ -120,6 +123,10 @@ class ELuoSiGame {
   }
 }
 
+ELuoSiGame.prototype.toggleHelp = function () {
+  this.help = !this.help
+}
+
 ELuoSiGame.prototype.setNewActiveBlock = function (blockCollect, styleIndex, position) {
   this.setActiveBlock(blockCollect)
   this.setActiveBlockStyleIndex(styleIndex)
@@ -138,16 +145,40 @@ ELuoSiGame.prototype.companyRandomBlock = function () {
   return { blockCollect: randomBlockCollect, styleIndex: randomColRowBlockCollectIndex, position: activeBlockInitPosition }
 }
 
+ELuoSiGame.prototype.getHelpAreaColAndRow = function () {
+  const activeBlockColAndRows = this.getActiveBoardColRow()
+  // 当前block占用的行数及列数
+  const currentRowList = Array.from(new Set(activeBlockColAndRows.map(({ row }) => row)))
+  const currentColList = Array.from(new Set(activeBlockColAndRows.map(({ col }) => col)))
+
+  const { col, row } = this.getNextVerticalBlockPosition(currentRowList.length)
+
+  return {
+    cols: new Array(currentColList.length).fill(1).map((value, index) => col + index),
+    row: row
+  }
+}
+
 ELuoSiGame.prototype.drawBoard = function () {
   const ctx = this.ctx
   ctx.clearRect(0, 0, this.width, this.height)
   const boardList = this.boardList
+
+  const { cols, row } = this.getHelpAreaColAndRow()
+
   for (let r = 0; r < boardList.length; r++) {
     for (let c = 0; c < boardList[r].length; c++) {
       const cellValue = boardList[r][c]
       if (cellValue === 0) {
         // 空白单元
         this.drawEmptyCell(c, r)
+        // 绘制辅助线
+        if (this.help && r >= row) {
+          const inHelpArea = cols.includes(c)
+          if (inHelpArea) {
+            this.drawHelpCell(c, r)
+          }
+        }
       } else if (cellValue === 1) {
         // 当前活动的单元
         this.drawActiveCell(c, r)
@@ -157,6 +188,7 @@ ELuoSiGame.prototype.drawBoard = function () {
       }
     }
   }
+
 }
 
 // 注册事件监听
@@ -209,19 +241,20 @@ ELuoSiGame.prototype.moveBlock = function (nextBlockCollect, nextStyleIndex, nex
       this.freezeActiveBlockBoardCell()
       this.removeFulledRow()
       const { blockCollect, styleIndex, position } = this.companyRandomBlock()
-      this.setNewActiveBlock(blockCollect, styleIndex, position)
       this.drawBoard()
 
-      this.checkGameIsOver(blockCollect, styleIndex, position)
+      this.canDrawNextActiveBlock(blockCollect, styleIndex, position)
+
+      this.setNewActiveBlock(blockCollect, styleIndex, position)
     }
   }
 }
 
 // 判断游戏是否结束
-ELuoSiGame.prototype.checkGameIsOver = function (blockCollect, styleIndex, position) {
-  const isOver = !this.getCanNextChange(blockCollect, styleIndex, position)
-  if (isOver) {
-    this.die = true
+ELuoSiGame.prototype.canDrawNextActiveBlock = function (blockCollect, styleIndex, position) {
+  this.die = !this.getCanNextChange(blockCollect, styleIndex, position)
+  if (this.die) {
+    // this.die = true
     alert('游戏结束')
   }
 }
@@ -356,6 +389,18 @@ ELuoSiGame.prototype.drawActiveCell = function (c, r) {
 
   // 单元格内填充
   ctx.fillStyle = 'rgba(0, 0, 0, 1)'
+  this.fillRect(c, r)
+}
+
+// 绘制辅助的单元
+ELuoSiGame.prototype.drawHelpCell = function (c, r) {
+  const ctx = this.ctx
+  // 单元格描边
+  ctx.strokeStyle = 'rgba(0, 0, 0, .25)'
+  this.strokeRect(c, r)
+
+  // 单元格内填充
+  ctx.fillStyle = 'rgba(0, 0, 0, .25)'
   this.fillRect(c, r)
 }
 
