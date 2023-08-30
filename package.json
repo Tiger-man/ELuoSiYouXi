@@ -1,0 +1,26 @@
+{
+  "name": "eluosigame",
+  "version": "1.0.0",
+  "description": "javascript版俄罗斯游戏",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "vite build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tiger-man/ELuoSiYouXi.git"
+  },
+  "keywords": [
+    "javascript俄罗斯游戏"
+  ],
+  "author": "tiger-man",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tiger-man/ELuoSiYouXi/issues"
+  },
+  "homepage": "https://github.com/Tiger-man/ELuoSiYouXi#readme",
+  "devDependencies": {
+    "vite": "^4.4.9"
+  }
+}
